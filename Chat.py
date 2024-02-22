@@ -1,4 +1,4 @@
-import  os
+import os
 from dataclasses import dataclass
 from typing import Literal
 import streamlit as st
@@ -6,12 +6,12 @@ from IChatBot import Chatbot
 import streamlit.components.v1 as components
 
 static_path = os.path.join(os.path.dirname(__file__), "static")
+
 @dataclass
 class Message:
     """Class for keeping track of a chat message."""
     origin: Literal["human", "ai"]
     message: str
-
 
 def load_css():
     css_file = os.path.join(static_path, "styles.css")
@@ -26,14 +26,16 @@ def initialize_session_state():
         st.session_state.token_count = 0
     if "conversation" not in st.session_state:
         st.session_state.conversation = Chatbot()
-
+    if "human_prompt" not in st.session_state:
+        st.session_state.human_prompt = ""  # Initialize human prompt
 
 def on_click_callback():
     human_prompt = st.session_state.human_prompt
     llm_response = st.session_state.conversation.generate_response(human_prompt)
     st.session_state.history.append(Message("human", human_prompt))
     st.session_state.history.append(Message("ai", llm_response))
-
+    # Clear the input prompt after submission
+    st.session_state.human_prompt = ""
 
 load_css()
 initialize_session_state()
@@ -52,7 +54,7 @@ with chat_placeholder:
     <img class="chat-icon" src="app/static/{
         'ai_icon.png' if chat.origin == 'ai'
         else 'user_icon.png'}"
-         width=32 height=32>
+         width=42 height=42>
     <div class="chat-bubble
     {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
         &#8203;{chat.message}
@@ -72,7 +74,7 @@ with prompt_placeholder:
     cols = st.columns((6, 1))
     cols[0].text_input(
         "Chat",
-        value="Hello bot",
+        value=None,  # Set default value to None
         label_visibility="collapsed",
         key="human_prompt",
     )
@@ -81,4 +83,3 @@ with prompt_placeholder:
         type="primary",
         on_click=on_click_callback,
     )
-
