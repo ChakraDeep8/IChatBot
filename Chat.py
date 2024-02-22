@@ -4,6 +4,7 @@ from typing import Literal
 import streamlit as st
 from IChatBot import Chatbot
 import streamlit.components.v1 as components
+import pandas as pd
 
 static_path = os.path.join(os.path.dirname(__file__), "static")
 
@@ -40,7 +41,20 @@ def on_click_callback():
 load_css()
 initialize_session_state()
 
-st.title("IChatbot 🤖")
+import streamlit as st
+
+st.markdown("<h2 style='margin-bottom: -10px;'>Hi, I am Chatty 🤗</h1>", unsafe_allow_html=True)
+st.markdown("<h5 style='margin-top: -10px;'>Feel free to chat with me..</h3>", unsafe_allow_html=True)
+st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px;'>", unsafe_allow_html=True)
+
+
+# Load sample questions from dialog.txt using pandas
+dialogs_df = pd.read_csv('dialogs.txt', sep='\t', header=None, names=['Question', 'Answer'])
+sample_questions = dialogs_df['Question'].sample(n=20, random_state=42).tolist()
+
+st.sidebar.title("Sample Questions")
+st.sidebar.markdown("Select a question to suggest to the user:")
+selected_question = st.sidebar.selectbox("", sample_questions)
 
 chat_placeholder = st.container()
 prompt_placeholder = st.form("chat-form")
@@ -72,9 +86,10 @@ with chat_placeholder:
 with prompt_placeholder:
     st.markdown("**Chat**")
     cols = st.columns((6, 1))
+    # Set the default value of the text input to the selected question
     cols[0].text_input(
         "Chat",
-        value=None,  # Set default value to None
+        value=selected_question,
         label_visibility="collapsed",
         key="human_prompt",
     )
@@ -83,3 +98,6 @@ with prompt_placeholder:
         type="primary",
         on_click=on_click_callback,
     )
+    # Display toast message suggesting checking out sample questions
+    if st.session_state.human_prompt == "":
+        st.error("👈 Check out the sample questions on the sidebar for ideas!")
