@@ -5,7 +5,7 @@ import streamlit as st
 from IChatBot import Chatbot
 import streamlit.components.v1 as components
 import pandas as pd
-
+import random
 static_path = os.path.join(os.path.dirname(__file__), "static")
 
 @dataclass
@@ -41,20 +41,17 @@ def on_click_callback():
 load_css()
 initialize_session_state()
 
-import streamlit as st
-
 st.markdown("<h2 style='margin-bottom: -10px;'>Hi, I am Chatty 🤗</h1>", unsafe_allow_html=True)
 st.markdown("<h5 style='margin-top: -10px;'>Feel free to chat with me..</h3>", unsafe_allow_html=True)
 st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px;'>", unsafe_allow_html=True)
 
-
 # Load sample questions from dialog.txt using pandas
 dialogs_df = pd.read_csv('dialogs.txt', sep='\t', header=None, names=['Question', 'Answer'])
-sample_questions = dialogs_df['Question'].sample(n=20, random_state=42).tolist()
-
+index_questions = dialogs_df[dialogs_df['Question'].str.endswith('?')]['Question'].tolist()
+selected_questions = random.sample(index_questions, k=100)
 st.sidebar.title("Sample Questions")
-st.sidebar.markdown("Select a question to suggest to the user:")
-selected_question = st.sidebar.selectbox("", sample_questions)
+st.sidebar.markdown("Select a question 👇")
+selected_question = st.sidebar.selectbox("", selected_questions)
 
 chat_placeholder = st.container()
 prompt_placeholder = st.form("chat-form")
@@ -63,18 +60,18 @@ credit_card_placeholder = st.empty()
 with chat_placeholder:
     for chat in st.session_state.history:
         div = f"""
-<div class="chat-row 
-    {'' if chat.origin == 'ai' else 'row-reverse'}">
-    <img class="chat-icon" src="app/static/{
+            <div class="chat-row 
+                {'' if chat.origin == 'ai' else 'row-reverse'}">
+                <img class="chat-icon" src="app/static/{
         'ai_icon.png' if chat.origin == 'ai'
         else 'user_icon.png'}"
-         width=42 height=42>
-    <div class="chat-bubble
-    {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-        &#8203;{chat.message}
-    </div>
-</div>
-        """
+                     width=42 height=42>
+                <div class="chat-bubble
+                {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
+                    &#8203;{chat.message}
+                </div>
+            </div>
+                    """
         st.markdown(div, unsafe_allow_html=True)
 
     for _ in range(3):
