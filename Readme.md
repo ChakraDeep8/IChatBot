@@ -34,8 +34,5 @@ Contributions are welcome! If you'd like to contribute to the development of Int
 - Make your enhancements or fixes
 - Submit a pull request
 
-## License
-This project is licensed under the [MIT License](LICENSE).
-
 ## Contact
 For inquiries or support, please contact [deepchakraborty0810@gmail.com](Mail).
