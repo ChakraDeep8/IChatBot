@@ -124,7 +124,7 @@ selected_question = st.sidebar.selectbox("Select a question&nbsp;👇", selected
 if st.session_state.show_donkey:
     col1, col2, col3 = st.columns([1, 5, 1])
     with col2:
-        st.sidebar.image("static/Donkey.png", width=100)
+        st.sidebar.image("app/static/donkey.png", width=100)
 
 chat_placeholder = st.container()
 prompt_placeholder = st.form("chat-form")
