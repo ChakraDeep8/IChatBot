@@ -95,8 +95,6 @@ st.button(btn_face, on_click=change_theme)
 if not ms.themes["refreshed"]:
     ms.themes["refreshed"] = True
     st.rerun()
-
-
 def initialize_session_state():
     if "history" not in st.session_state:
         st.session_state.history = []
