@@ -33,6 +33,7 @@ class Chatbot:
         self.additional_short_expressions = {
             'lol': ["That's funny!", "LOL!", "Haha, good one!", "Hehe, you got me!", "I chuckled!"],
             'haha': ["Haha!", "That's hilarious!", "Funny one!", "You cracked me up!"],
+            'ahaha': ["Ahaha!", "That's funny!", "Haha, good one!", "You got me laughing!"],
             'hehe': ["Hehe!", "That's amusing!", "Nice one!", "You got me giggling!"],
             'rofl': ["ROFL!", "Oh, that's too funny!", "I'm rolling on the floor laughing!", "LOL, you're killing me!"],
             'lmao': ["LMAO!", "I'm laughing my *ss off!", "Haha, that's hilarious!", "You got me in stitches!"],
@@ -51,6 +52,8 @@ class Chatbot:
             'ttyl': ["TTYL!", "Talk to you later!", "Catch you later!", "Until next time!"],
             'lolwut': ["LOLWUT?", "What on earth?", "That's unexpected!", "You surprised me!"],
             'np': ["NP!", "No problem!", "You're welcome!", "Anytime!"],
+            'ohh': ["Ohh...", "I see...", "Got it!", "Interesting!"]
+
         }
     def preprocess_text(self, text):
         tokens = self.tokenizer.tokenize(text.lower())

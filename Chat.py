@@ -6,9 +6,19 @@ from IChatBot import Chatbot
 import streamlit.components.v1 as components
 import pandas as pd
 import random
+from PIL import Image as img
 
+logo = img.open('static/9742055.png')
+st.set_page_config(page_title='Chattey The ChatBot', page_icon=logo)
 static_path = os.path.join(os.path.dirname(__file__), "static")
-
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 @dataclass
 class Message:
