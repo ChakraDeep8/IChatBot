@@ -93,6 +93,8 @@ def on_click_callback():
     st.session_state.history.append(Message("ai", llm_response))
     # Clear the input prompt after submission
     st.session_state.human_prompt = ""
+    random.shuffle(selected_questions)
+
 
 
 load_css()
@@ -105,17 +107,17 @@ st.markdown("<hr style='margin-top: 10px; margin-bottom: 10px;'>", unsafe_allow_
 # Load sample questions from dialog.txt using pandas
 dialogs_df = pd.read_csv('dialogs.txt', sep='\t', header=None, names=['Question', 'Answer'])
 question_ends_with_question_mark = dialogs_df[dialogs_df['Question'].str.endswith('?')]['Question'].tolist()
+random.seed(42)
 selected_questions = random.sample(question_ends_with_question_mark, k=100)
 
 st.sidebar.title("Sample Questions")
-selected_question = st.sidebar.selectbox("Select a question&nbsp;&nbsp;👇", selected_questions)
+selected_question = st.sidebar.selectbox("Select a question&nbsp;👇", selected_questions)
 
 # Display the donkey image in the sidebar if show_donkey flag is True
 if st.session_state.show_donkey:
     col1, col2, col3 = st.columns([1, 5, 1])
     with col2:
         st.sidebar.image("static/Donkey.png", width=100)
-
 
 chat_placeholder = st.container()
 prompt_placeholder = st.form("chat-form")
@@ -124,18 +126,18 @@ credit_card_placeholder = st.empty()
 with chat_placeholder:
     for chat in st.session_state.history:
         div = f"""
-<div class="chat-row 
-    {'' if chat.origin == 'ai' else 'row-reverse'}">
-    <img class="chat-icon" src="app/static/{
+            <div class="chat-row 
+                {'' if chat.origin == 'ai' else 'row-reverse'}">
+                <img class="chat-icon" src="app/static/{
         'ai_icon.png' if chat.origin == 'ai'
         else 'user_icon.png'}"
-         width=42 height=42>
-    <div class="chat-bubble
-    {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
-        &#8203;{chat.message}
-    </div>
-</div>
-        """
+                     width=42 height=42>
+                <div class="chat-bubble
+                {'ai-bubble' if chat.origin == 'ai' else 'human-bubble'}">
+                    &#8203;{chat.message}
+                </div>
+            </div>
+                    """
         st.markdown(div, unsafe_allow_html=True)
 
 with prompt_placeholder:
@@ -150,7 +152,7 @@ with prompt_placeholder:
     cols[1].form_submit_button(
         "Submit",
         type="primary",
-        on_click=on_click_callback,
+        on_click=on_click_callback
     )
     if st.session_state.human_prompt == "":
         st.error("👈 Check out the sample questions on the sidebar for ideas!")

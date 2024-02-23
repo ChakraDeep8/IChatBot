@@ -25,6 +25,33 @@ class Chatbot:
         self.tfidf_matrix = self.vectorizer.fit_transform(self.df['Question'].apply(self.preprocess_text))
         self.previous_response = None
 
+        self.additional_jokes = [
+        ("Why don't scientists trust atoms?", "Because they make up everything!"),
+        ("What do you call a fake noodle?", "An impasta!"),
+        ("Why did the scarecrow win an award?", "Because he was outstanding in his field!"),
+        ]
+        self.additional_short_expressions = {
+            'lol': ["That's funny!", "LOL!", "Haha, good one!", "Hehe, you got me!", "I chuckled!"],
+            'haha': ["Haha!", "That's hilarious!", "Funny one!", "You cracked me up!"],
+            'hehe': ["Hehe!", "That's amusing!", "Nice one!", "You got me giggling!"],
+            'rofl': ["ROFL!", "Oh, that's too funny!", "I'm rolling on the floor laughing!", "LOL, you're killing me!"],
+            'lmao': ["LMAO!", "I'm laughing my *ss off!", "Haha, that's hilarious!", "You got me in stitches!"],
+            'omg': ["OMG!", "Oh my gosh!", "Wow, really?", "That's incredible!"],
+            'brb': ["BRB!", "Sure, take your time!", "No problem, I'll be here!", "Take your time, I'll wait!"],
+            'btw': ["BTW!", "By the way!", "Just a heads up!", "Oh, and by the way!"],
+            'gtg': ["GTG!", "Got to go!", "I need to run!", "Catch you later!"],
+            'idk': ["IDK!", "I don't know!", "Not sure about that!", "Hmm, that's a tough one!"],
+            'hmm': ["Hmm...", "Interesting!", "Let me think about that.", "I'm pondering..."],
+            'hm': ["Hm...", "Hmm...", "I see.", "Interesting point."],
+            'hmmm': ["Hmmm...", "Deep in thought...", "Let me consider that.", "Interesting question!"],
+            'hmmmm': ["Hmmm...", "Deep in thought...", "Let me consider that.", "Interesting question!"],
+            'hmmmmm': ["Hm...", "Hmm...", "I see.", "Interesting point."],
+            'wtf': ["WTF!", "What the heck?", "Seriously?", "I'm shocked!"],
+            'fyi': ["FYI!", "Just so you know!", "For your information!", "By the way!"],
+            'ttyl': ["TTYL!", "Talk to you later!", "Catch you later!", "Until next time!"],
+            'lolwut': ["LOLWUT?", "What on earth?", "That's unexpected!", "You surprised me!"],
+            'np': ["NP!", "No problem!", "You're welcome!", "Anytime!"],
+        }
     def preprocess_text(self, text):
         tokens = self.tokenizer.tokenize(text.lower())
         tokens = [token for token in tokens if token not in self.stop_words]
@@ -49,5 +76,9 @@ class Chatbot:
                 "I chuckled!"
             ]
             return random.choice(responses)
+        elif user_query.lower() == 'tell me a joke':
+            joke, punchline = random.choice(self.additional_jokes)
+            return f"{joke}\n{punchline}"
+
         else:
             return "I'm sorry, I don't understand that."
