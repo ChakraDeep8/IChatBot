@@ -30,3 +30,8 @@
 .chat-icon {
     border-radius: 5px;
 }
+.donkey-image {
+    background-image: url("static/donkey.png");
+    width: 10px;
+    height: 15px;
+}
