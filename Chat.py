@@ -9,6 +9,7 @@ import random
 
 static_path = os.path.join(os.path.dirname(__file__), "static")
 
+
 @dataclass
 class Message:
     """Class for keeping track of a chat message."""
@@ -66,6 +67,7 @@ if ms.themes["refreshed"] == False:
     ms.themes["refreshed"] = True
     st.rerun()
 
+
 def initialize_session_state():
     if "history" not in st.session_state:
         st.session_state.history = []
@@ -75,11 +77,18 @@ def initialize_session_state():
         st.session_state.conversation = Chatbot()
     if "human_prompt" not in st.session_state:
         st.session_state.human_prompt = ""  # Initialize human prompt
+    if "show_donkey" not in st.session_state:
+        st.session_state.show_donkey = False
 
 
 def on_click_callback():
     human_prompt = st.session_state.human_prompt
-    llm_response = st.session_state.conversation.generate_response(human_prompt)
+    if 'arijit' in human_prompt.lower():
+        st.session_state.show_donkey = True
+        llm_response = "Yes indeed Arijit is a donkey."
+    else:
+        st.session_state.show_donkey = False
+        llm_response = st.session_state.conversation.generate_response(human_prompt)
     st.session_state.history.append(Message("human", human_prompt))
     st.session_state.history.append(Message("ai", llm_response))
     # Clear the input prompt after submission
@@ -99,8 +108,14 @@ question_ends_with_question_mark = dialogs_df[dialogs_df['Question'].str.endswit
 selected_questions = random.sample(question_ends_with_question_mark, k=100)
 
 st.sidebar.title("Sample Questions")
-#st.sidebar.markdown("Select a question 👇")
 selected_question = st.sidebar.selectbox("Select a question&nbsp;&nbsp;👇", selected_questions)
+
+# Display the donkey image in the sidebar if show_donkey flag is True
+if st.session_state.show_donkey:
+    col1, col2, col3 = st.columns([1, 5, 1])
+    with col2:
+        st.sidebar.image("static/Donkey.png", width=100)
+
 
 chat_placeholder = st.container()
 prompt_placeholder = st.form("chat-form")
@@ -126,7 +141,6 @@ with chat_placeholder:
 with prompt_placeholder:
     st.markdown("**Chat**")
     cols = st.columns((6, 1))
-    # Set the default value of the text input to the selected question
     cols[0].text_input(
         "Chat",
         value=selected_question,
@@ -138,7 +152,5 @@ with prompt_placeholder:
         type="primary",
         on_click=on_click_callback,
     )
-    # Display toast message suggesting checking out sample questions
     if st.session_state.human_prompt == "":
         st.error("👈 Check out the sample questions on the sidebar for ideas!")
-
