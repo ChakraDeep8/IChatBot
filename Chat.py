@@ -9,7 +9,16 @@ import random
 from PIL import Image as img
 
 logo = img.open('static/9742055.png')
-st.set_page_config(page_title='Chattey The ChatBot', page_icon=logo)
+logo = logo.resize((500, 500))
+st.set_page_config(page_title='Chattey The ChatBot',
+                   page_icon=logo,
+                   layout='wide',
+                   initial_sidebar_state='auto',
+                   menu_items={
+                       'Get help': None,
+                       'Report a bug': None,
+                       'About': "This is a simple chatbot interface created with Streamlit."
+                   })
 static_path = os.path.join(os.path.dirname(__file__), "static")
 hide_st_style = """
             <style>
@@ -19,6 +28,7 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
 
 @dataclass
 class Message:
@@ -58,6 +68,7 @@ if "themes" not in ms:
         }
     }
 
+
 # Function to change theme
 def change_theme():
     previous_theme = ms.themes["current_theme"]
@@ -72,8 +83,10 @@ def change_theme():
     elif previous_theme == "light":
         ms.themes["current_theme"] = "dark"
 
+
 # Button face based on current theme
-btn_face = ms.themes["light"]["button_face"] if ms.themes["current_theme"] == "light" else ms.themes["dark"]["button_face"]
+btn_face = ms.themes["light"]["button_face"] if ms.themes["current_theme"] == "light" else ms.themes["dark"][
+    "button_face"]
 
 # Button to change theme
 st.button(btn_face, on_click=change_theme)
@@ -82,7 +95,6 @@ st.button(btn_face, on_click=change_theme)
 if not ms.themes["refreshed"]:
     ms.themes["refreshed"] = True
     st.rerun()
-
 
 
 def initialize_session_state():
@@ -111,7 +123,6 @@ def on_click_callback():
     # Clear the input prompt after submission
     st.session_state.human_prompt = ""
     random.shuffle(selected_questions)
-
 
 
 load_css()
