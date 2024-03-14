@@ -5,6 +5,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import emoji
 import random
 
 # Download NLTK data and store it in the Streamlit app directory
@@ -26,9 +27,9 @@ class Chatbot:
         self.previous_response = None
 
         self.additional_jokes = [
-        ("Why don't scientists trust atoms?", "Because they make up everything!"),
-        ("What do you call a fake noodle?", "An impasta!"),
-        ("Why did the scarecrow win an award?", "Because he was outstanding in his field!"),
+            ("Why don't scientists trust atoms?", "Because they make up everything!"),
+            ("What do you call a fake noodle?", "An impasta!"),
+            ("Why did the scarecrow win an award?", "Because he was outstanding in his field!"),
         ]
         self.additional_short_expressions = {
             'lol': ["That's funny!", "LOL!", "Haha, good one!", "Hehe, you got me!", "I chuckled!"],
@@ -53,8 +54,34 @@ class Chatbot:
             'lolwut': ["LOLWUT?", "What on earth?", "That's unexpected!", "You surprised me!"],
             'np': ["NP!", "No problem!", "You're welcome!", "Anytime!"],
             'ohh': ["Ohh...", "I see...", "Got it!", "Interesting!"]
-
         }
+
+        self.emoji_responses = {
+            '😂': ["That's funny!", "LOL!", "Haha, good one!", "Hehe, you got me!", "I chuckled!"],
+            '😊': ["I'm glad you're happy!", "That's wonderful!", "Smile, it's contagious!", "Spread the happiness!"],
+            '🙂': ["I'm glad you're happy!", "That's wonderful!", "Smile, it's contagious!", "Spread the happiness!"],
+            '😢': ["I'm sorry to hear that. Is there anything I can do?", "Sending hugs your way.",
+                  "It's okay to feel sad sometimes.", "Things will get better!"],
+            '😍': ["Wow, that's lovely!", "You're so in love!", "Heart eyes all the way!", "That's adorable!"],
+            '😎': ["Cool as a cucumber!", "Looking sharp!", "Sunglasses emoji level cool!", "You're rocking it!"],
+            '🤔': ["Hmm, let me think about that.", "Interesting question!", "Deep in thought...", "I ponder..."],
+            '🥳': ["Woo-hoo, let's celebrate!", "Party time!", "Congratulations!", "That calls for a celebration!"],
+            '👍': ["Thumbs up!", "Great job!", "You got it!", "Well done!"],
+            '👏': ["Clap clap!", "Bravo!", "Well done!", "You're amazing!"],
+            '🎉': ["Hooray!", "Let's celebrate!", "Congrats!", "Party time!"],
+            '🤗': ["Big hug!", "Hugs!", "Sending you warm wishes!", "You're not alone!"],
+            '😄': ["Smile, it's contagious!", "Cheer up!", "Be happy!", "Let's spread joy!"],
+            '😤': ["Take a deep breath.", "Stay calm.", "Let's keep cool.", "Inhale, exhale."],
+            '🙄': ["Rolling my eyes.", "Sigh...", "Hmm, interesting.", "What a surprise."],
+            '😱': ["Oh no, that's scary!", "Yikes!", "That's terrifying!", "Take care!"],
+            '🤣': ["ROFL!", "That's hilarious!", "HAHA!", "You're cracking me up!"],
+            '😇': ["Angel emoji!", "You're too kind!", "Good vibes only!", "You're an angel!"],
+            '🤩': ["Wow, that's amazing!", "You're awesome!", "Amazing!", "Fantastic!"],
+            '😬': ["Oops!", "Awkward...", "My bad!", "Sorry about that!"],
+            '🤫': ["Shh, it's a secret!", "Keep it quiet!", "Let's keep this between us!", "Confidential!"],
+            # Add more emoji mappings and responses here
+        }
+
     def preprocess_text(self, text):
         tokens = self.tokenizer.tokenize(text.lower())
         tokens = [token for token in tokens if token not in self.stop_words]
@@ -62,6 +89,12 @@ class Chatbot:
         return ' '.join(tokens)
 
     def generate_response(self, user_query, threshold=0.2):
+        # Check for emoji responses
+        for emoji_code, responses in self.emoji_responses.items():
+            if emoji_code in user_query:
+                return random.choice(responses)
+
+        # Process user query and check for matching responses
         user_query = self.preprocess_text(user_query)
         user_tfidf = self.vectorizer.transform([user_query])
         similarities = cosine_similarity(user_tfidf, self.tfidf_matrix)
@@ -70,18 +103,16 @@ class Chatbot:
             response_index = random.choice(similar_indices.nonzero()[0])
             self.previous_response = self.df.loc[response_index, 'Answer']
             return self.previous_response
-        elif user_query.lower() in ['lol', 'haha', 'hehe']:  # Handling short expressions
-            responses = [
-                "That's funny!",
-                "LOL!",
-                "Haha, good one!",
-                "Hehe, you got me!",
-                "I chuckled!"
-            ]
-            return random.choice(responses)
-        elif user_query.lower() == 'tell me a joke':
+
+        # Check for additional short expressions
+        for expression, responses in self.additional_short_expressions.items():
+            if user_query.lower() == expression:
+                return random.choice(responses)
+
+        # Check for jokes
+        if user_query.lower() == 'tell me a joke':
             joke, punchline = random.choice(self.additional_jokes)
             return f"{joke}\n{punchline}"
 
-        else:
-            return "I'm sorry, I don't understand that."
+        # If no matching response is found, provide a generic response
+        return "I'm sorry, I don't understand that."
