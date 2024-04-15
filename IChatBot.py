@@ -8,11 +8,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 import random
 import json
 import emoji
-
-# Download NLTK data and store it in the Streamlit app directory
+'''# Download NLTK data and store it in the Streamlit app directory
 nltk.download('punkt', download_dir='.')
 nltk.download('stopwords', download_dir='.')
-nltk.download('wordnet', download_dir='.')
+nltk.download('wordnet', download_dir='.')'''
 
 # Add NLTK's data directory to the path
 nltk.data.path.append('.')

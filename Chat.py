@@ -8,7 +8,9 @@ import pandas as pd
 import random
 from PIL import Image as img
 from local import hf_local as text_to_speech
-
+import soundfile as sf
+import sounddevice as sd
+import base64
 
 logo = img.open('static/9742055.png')
 logo = logo.resize((500, 500))
@@ -114,6 +116,33 @@ def preprocess_text(text):
     # For example, you can remove leading/trailing whitespaces, handle special cases, etc.
     text = text.strip()
     return text
+'''def audio_player(file_path: str):
+    with open(file_path, "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+
+    audio_id = "my-audio-player"  # Unique identifier for the player element
+    hide_button = st.button("Hide Player")
+
+    md = f"""
+        <audio id="{audio_id}" controls autoplay="true">
+        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+        </audio>
+        """
+
+    st.markdown(md, unsafe_allow_html=True)
+
+    if hide_button:
+        # Use JavaScript to hide the player element
+        st.write(
+            """
+            <script>
+                document.getElementById("{audio_id}").style.display = 'none';
+            </script>
+            """.format(audio_id=audio_id),
+            unsafe_allow_html=True,
+        )
+'''
 def on_click_callback():
     human_prompt = st.session_state.human_prompt
     if 'arijit' in human_prompt.lower():
@@ -124,7 +153,8 @@ def on_click_callback():
         llm_response = st.session_state.conversation.generate_response(human_prompt)
     preprocessed_response = preprocess_text(llm_response)
     audio_response = text_to_speech(preprocessed_response)
-    st.audio(audio_response, format="audio/wav", sample_rate=16000)
+    #sf.write("speech.wav", audio_response, samplerate=16000)
+    sd.play(audio_response, samplerate=16000)
     st.session_state.history.append(Message("human", human_prompt))
     st.session_state.history.append(Message("ai", llm_response))
     # Clear the input prompt after submission
