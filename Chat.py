@@ -7,6 +7,8 @@ import streamlit.components.v1 as components
 import pandas as pd
 import random
 from PIL import Image as img
+from local import hf_local as text_to_speech
+
 
 logo = img.open('static/9742055.png')
 logo = logo.resize((500, 500))
@@ -107,7 +109,11 @@ def initialize_session_state():
     if "show_donkey" not in st.session_state:
         st.session_state.show_donkey = False
 
-
+def preprocess_text(text):
+    # Add your preprocessing steps here
+    # For example, you can remove leading/trailing whitespaces, handle special cases, etc.
+    text = text.strip()
+    return text
 def on_click_callback():
     human_prompt = st.session_state.human_prompt
     if 'arijit' in human_prompt.lower():
@@ -116,6 +122,9 @@ def on_click_callback():
     else:
         st.session_state.show_donkey = False
         llm_response = st.session_state.conversation.generate_response(human_prompt)
+    preprocessed_response = preprocess_text(llm_response)
+    audio_response = text_to_speech(preprocessed_response)
+    st.audio(audio_response, format="audio/wav", sample_rate=16000)
     st.session_state.history.append(Message("human", human_prompt))
     st.session_state.history.append(Message("ai", llm_response))
     # Clear the input prompt after submission

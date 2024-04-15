@@ -12,3 +12,10 @@ emoji~=2.10.1
 streamlit_option_menu
 streamlit_extras
 st_pages
+transformers
+python-dotenv
+requests
+torch
+soundfile
+datasets
+sentencepiece
