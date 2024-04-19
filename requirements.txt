@@ -20,4 +20,4 @@ soundfile~=0.12.1
 datasets~=2.18.0
 sentencepiece
 sounddevice~=0.4.6
-libportaudio2
+
