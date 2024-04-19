@@ -1,13 +1,13 @@
-import pandas as pd
+import json
+import random
 import nltk
-from nltk.tokenize import RegexpTokenizer
+import pandas as pd
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import RegexpTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import random
-import json
-import emoji
+
 '''# Download NLTK data and store it in the Streamlit app directory
 nltk.download('punkt', download_dir='.')
 nltk.download('stopwords', download_dir='.')
