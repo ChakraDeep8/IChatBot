@@ -1,9 +1,6 @@
 from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan
 from datasets import load_dataset
 import torch
-import soundfile as sf
-import nltk
-from nltk.tokenize import word_tokenize
 
 
 def hf_local(text):
