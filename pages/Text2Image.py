@@ -11,10 +11,10 @@ def query_stabilitydiff(payload, headers):
 
 
 st.title("💬 Chatbot - Text to Image")
-st.caption("🚀 A Streamlit chatbot powered by Stable Diffusion")
+st.caption("powered by Stable Diffusion")
 if "messages" not in st.session_state:
     st.session_state["messages"] = [
-        {"role": "assistant", "content": "What kind of image that I need to draw? (example: running cat)"}]
+        {"role": "assistant", "content": "What I need to generate?"}]
 
 # Show previous prompts and results that saved in session
 for message in st.session_state.messages:
